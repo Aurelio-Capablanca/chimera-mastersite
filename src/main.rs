@@ -2,6 +2,7 @@
 mod backend;
 
 pub mod frontend;
+use crate::frontend::view::app::*;
 
 #[cfg(feature = "ssr")]
 #[tokio::main]
@@ -11,7 +12,6 @@ async fn main() {
     use leptos::logging::log;
     use leptos::prelude::*;
     use leptos_axum::{generate_route_list, LeptosRoutes};
-    use crate::frontend::view::app::*;
 
     let conf = get_configuration(None).unwrap();
     let addr = conf.leptos_options.site_addr;
@@ -36,6 +36,16 @@ async fn main() {
         .await
         .unwrap();
 }
+
+
+//lib.rs
+#[cfg(feature = "hydrate")]
+#[wasm_bindgen::prelude::wasm_bindgen]
+pub fn hydrate() {    
+    console_error_panic_hook::set_once();
+    leptos::mount::hydrate_body(App);
+}
+
 
 #[cfg(not(feature = "ssr"))]
 pub fn main() {
