@@ -1,5 +1,9 @@
-use leptos::prelude::*;
+use crate::frontend::view::login::Login;
+use leptos::logging;
+use leptos::{prelude::*};
 use leptos_meta::{provide_meta_context, MetaTags, Stylesheet, Title};
+use leptos_router::hooks::use_navigate;
+use leptos_router::path;
 use leptos_router::{
     components::{Route, Router, Routes},
     StaticSegment,
@@ -40,6 +44,7 @@ pub fn App() -> impl IntoView {
             <main>
                 <Routes fallback=|| "Page not found.".into_view()>
                     <Route path=StaticSegment("") view=HomePage/>
+                    <Route path=path!("login") view=Login/>
                 </Routes>
             </main>
         </Router>
@@ -52,10 +57,17 @@ fn HomePage() -> impl IntoView {
     // Creates a reactive value to update the button
     let count = RwSignal::new(0);
     let on_click = move |_| *count.write() += 1;
+    let navigate = use_navigate();
+    let go_to_login = move |_| {
+        logging::log!("Admin button clicked! Attempting navigation...");
+        navigate("/login", Default::default());
+    };
 
     view! {
-        <button >"are you admin?"</button>
-        <h1>"Welcome Visitor !"</h1>
-        <button on:click=on_click>"Click Me: " {count}</button>
+        <div class="welcome-container">
+            <button on:click=go_to_login>"are you admin?"</button>
+            <h1>"Welcome Visitor !"</h1>            
+            <button on:click=on_click>"Click Me: " {count}</button>
+        </div>
     }
 }
